@@ -255,4 +255,45 @@ public class TemperatureSeriesAnalysisTest {
 
         assertEquals(expResult, actualResult, 0.00001);
     }
+
+    @Test
+    public void testEmptyConstructor() {
+        TemperatureSeriesAnalysis empt = new TemperatureSeriesAnalysis();
+
+        assertTrue(empt instanceof TemperatureSeriesAnalysis);
+    }
+
+    @Test(expected = InputMismatchException.class)
+    public void testConstructorWithWrongParameters() {
+        double[] inputData = {2.0, -700, 13.4};
+        TemperatureSeriesAnalysis seriesWithParameters = new TemperatureSeriesAnalysis(inputData);
+
+        double expectedSeriesLength = 4;
+
+        assertEquals(expectedSeriesLength, seriesWithParameters.getTemperatureSeriesLength(), 0.0001);
+    }
+
+    @Test
+    public void testConstructorWithParameters() {
+        double[] inputData = {2.0, -70, 13.4};
+        TemperatureSeriesAnalysis seriesWithParameters = new TemperatureSeriesAnalysis(inputData);
+
+        double expectedSeriesLength = 4;
+
+        assertEquals(expectedSeriesLength, seriesWithParameters.getTemperatureSeriesLength(), 0.0001);
+    }
+
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSummaryStatisticsWithEmptyArray() {
+        TemperatureSeriesAnalysis seriesAnalysis = new TemperatureSeriesAnalysis(emptyTemperatureSeries);
+
+        seriesAnalysis.summaryStatistics();
+    }
+
+    @Test
+    public void testSummaryStatistics() {
+        assertTrue(temperatureSeriesAnalysis.summaryStatistics() instanceof TempSummaryStatistics);
+    }
 }

@@ -8,16 +8,16 @@ public class TemperatureSeriesAnalysis {
     private static final int ABSOLUTE_MIN = -273;
     private double[] temperatureSeries;
 
-    public int getTemperatureSeriesLength() {
-        return temperatureSeries.length;
-    }
-
     public TemperatureSeriesAnalysis() {
 
     }
 
     public TemperatureSeriesAnalysis(double[] temperatureSeries) {
         addTemps(temperatureSeries);
+    }
+
+    public int getTemperatureSeriesLength() {
+        return temperatureSeries.length;
     }
 
     public double average() {
