@@ -5,12 +5,12 @@ import java.util.InputMismatchException;
 
 public class TemperatureSeriesAnalysis {
 
+    private static final int ABSOLUTE_MIN = -273;
+    private double[] temperatureSeries;
+
     public int getTemperatureSeriesLength() {
         return temperatureSeries.length;
     }
-
-    private double[] temperatureSeries;
-    private static final int absolute_min = -273;
 
     public TemperatureSeriesAnalysis() {
 
@@ -157,22 +157,22 @@ public class TemperatureSeriesAnalysis {
     }
 
     private double[] extendArray(double[] arr) {
-        double[] arrX2;
+        double[] arrX;
         if (arr == null) {
-            arrX2 = new double[] {Double.NaN};
+            arrX = new double[] {Double.NaN};
         } else {
-            arrX2 = new double[arr.length*2];
-            Arrays.fill(arrX2, Double.NaN);
+            arrX = new double[arr.length*2];
+            Arrays.fill(arrX, Double.NaN);
 
-            System.arraycopy(arr, 0, arrX2, 0, arr.length);
+            System.arraycopy(arr, 0, arrX, 0, arr.length);
         }
 
-        return arrX2;
+        return arrX;
     }
 
     private void checkForAbsoluteMin(double[] arr) {
         for (double incomeT: arr) {
-            if (incomeT < absolute_min) {
+            if (incomeT < ABSOLUTE_MIN) {
                 throw new InputMismatchException();
             }
         }
