@@ -5,13 +5,15 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.InputMismatchException;
+
 public class TemperatureSeriesAnalysisTest {
     private TemperatureSeriesAnalysis temperatureSeriesAnalysis;
     private double[] emptyTemperatureSeries = {};
     private double[] oneElementTemperatureSeries = {-1.0};
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         double[] temperatureSeries = {3.0, -5.0, 1.0, 5.0};
         this.temperatureSeriesAnalysis = new TemperatureSeriesAnalysis(temperatureSeries);
     }
@@ -189,7 +191,7 @@ public class TemperatureSeriesAnalysisTest {
         assertArrayEquals(expResult, actualResult, 0.00001);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testFindTempLessThanWithEmptyArray() {
         TemperatureSeriesAnalysis seriesAnalysis = new TemperatureSeriesAnalysis(emptyTemperatureSeries);
 
@@ -219,7 +221,7 @@ public class TemperatureSeriesAnalysisTest {
         assertArrayEquals(expResult, actualResult, 0.00001);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testFindTempGreaterThanWithEmptyArray() {
         TemperatureSeriesAnalysis seriesAnalysis = new TemperatureSeriesAnalysis(emptyTemperatureSeries);
 
@@ -234,5 +236,23 @@ public class TemperatureSeriesAnalysisTest {
         double[] actualResult = temperatureSeriesAnalysis.findTempsLessThan(2.7);
 
         assertArrayEquals(expResult, actualResult, 0.00001);
+    }
+
+    @Test(expected = InputMismatchException.class)
+    public void testAddTempsWithAbsoluteMin() {
+        double[] newTemps = new double[] {1, 1, 2, -420, 5, 8, 13, 21, 34, 55};
+        // expect exception here
+        temperatureSeriesAnalysis.addTemps(newTemps);
+    }
+
+    @Test
+    public void testAddTemps() {
+        double[] newTemps = new double[] {1, 1, 2, 3, 5, 8, 13, 21, 34, 55};
+        int currentSum = newTemps.length + temperatureSeriesAnalysis.getTemperatureSeriesLength();
+        int expResult = (int) Math.pow(2, Math.ceil(Math.log(currentSum)/Math.log(2)));
+        // expect exception here
+        int actualResult = temperatureSeriesAnalysis.addTemps(newTemps);
+
+        assertEquals(expResult, actualResult, 0.00001);
     }
 }

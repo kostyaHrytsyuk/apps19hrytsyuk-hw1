@@ -1,8 +1,13 @@
 package ua.edu.ucu.tempseries;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class TemperatureSeriesAnalysis {
+
+    public int getTemperatureSeriesLength() {
+        return temperatureSeries.length;
+    }
 
     private double[] temperatureSeries;
     private static final int absolute_min = -273;
@@ -12,12 +17,11 @@ public class TemperatureSeriesAnalysis {
     }
 
     public TemperatureSeriesAnalysis(double[] temperatureSeries) {
-        checkForAbsoluteMin(temperatureSeries);
-        this.temperatureSeries = temperatureSeries;
+        addTemps(temperatureSeries);
     }
 
     public double average() {
-        checkIsSeriesNull();
+        checkIsSeriesNull(temperatureSeries);
 
         double avgSum = 0;
 
@@ -29,7 +33,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double deviation() {
-        checkIsSeriesNull();
+        checkIsSeriesNull(temperatureSeries);
 
         double avgTemp = average();
 
@@ -43,7 +47,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double min() {
-        checkIsSeriesNull();
+        checkIsSeriesNull(temperatureSeries);
         double minValue = temperatureSeries[0];
 
         for (double t: temperatureSeries) {
@@ -56,7 +60,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double max() {
-        checkIsSeriesNull();
+        checkIsSeriesNull(temperatureSeries);
 
         double maxValue = temperatureSeries[0];
 
@@ -74,7 +78,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double findTempClosestToValue(double tempValue) {
-        checkIsSeriesNull();
+        checkIsSeriesNull(temperatureSeries);
         double closest = temperatureSeries[0];
         double differenceFromValue = Math.abs(tempValue - closest);
         for (double t: temperatureSeries) {
@@ -121,31 +125,47 @@ public class TemperatureSeriesAnalysis {
     }
 
     public TempSummaryStatistics summaryStatistics() {
-        checkIsSeriesNull();
+        checkIsSeriesNull(temperatureSeries);
         return new TempSummaryStatistics(average(), deviation(), min(), max());
     }
 
     public int addTemps(double... temps) {
-        int curLength = temperatureSeries.length;
+        checkIsSeriesNull(temps);
+        checkForAbsoluteMin(temps);
+        int j;
+
+        if (temperatureSeries == null) {
+            j = 0;
+        } else {
+            j = Arrays.binarySearch(temperatureSeries, Double.NaN);
+            if (j < 0) {
+                j = Math.abs(j)-1;
+            }
+        }
 
         temperatureSeries = extendArray(temperatureSeries);
-
-        for (int i = 0; i < temps.length; i++) {
-            int j = i + curLength;
-            if (temperatureSeries.length < j) {
+        for (double temp : temps) {
+            if (temperatureSeries.length <= j) {
                 temperatureSeries = extendArray(temperatureSeries);
             }
 
-            temperatureSeries[j] = temps[i];
+            temperatureSeries[j] = temp;
+            j++;
         }
 
-        return temps.length;
+        return temperatureSeries.length;
     }
 
     private double[] extendArray(double[] arr) {
-        double[] arrX2 = new double[arr.length*2];
+        double[] arrX2;
+        if (arr == null) {
+            arrX2 = new double[] {Double.NaN};
+        } else {
+            arrX2 = new double[arr.length*2];
+            Arrays.fill(arrX2, Double.NaN);
 
-        System.arraycopy(arr, 0, arrX2, 0, arr.length);
+            System.arraycopy(arr, 0, arrX2, 0, arr.length);
+        }
 
         return arrX2;
     }
@@ -158,8 +178,8 @@ public class TemperatureSeriesAnalysis {
         }
     }
 
-    private void checkIsSeriesNull() {
-        if (temperatureSeries == null || temperatureSeries.length == 0) {
+    private void checkIsSeriesNull(double[] arr) {
+        if (arr == null || arr.length == 0) {
             throw new IllegalArgumentException("Series is empty!");
         }
     }
