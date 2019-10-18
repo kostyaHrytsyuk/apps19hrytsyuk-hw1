@@ -12,66 +12,61 @@ public class TemperatureSeriesAnalysis {
     }
 
     public TemperatureSeriesAnalysis(double[] temperatureSeries) {
-        CheckForAbsoluteMin(temperatureSeries);
+        checkForAbsoluteMin(temperatureSeries);
         this.temperatureSeries = temperatureSeries;
     }
 
     public double average() {
-        CheckIsSeriesNull();
+        checkIsSeriesNull();
 
-        double ser_sum = 0;
+        double avgSum = 0;
 
         for (double t: temperatureSeries) {
-            ser_sum += t;
+            avgSum += t;
         }
 
-        double result = ser_sum / temperatureSeries.length;
-
-        return result;
+        return avgSum / temperatureSeries.length;
     }
 
     public double deviation() {
-        CheckIsSeriesNull();
+        checkIsSeriesNull();
 
-        double avg_temp = average();
+        double avgTemp = average();
 
-        double sum = 0;
         double deviation = 0;
 
-        for(double t: temperatureSeries) {
-            deviation += Math.pow(t - avg_temp, 2);
+        for (double t: temperatureSeries) {
+            deviation += (t - avgTemp)*(t - avgTemp);
         }
 
-        double result = Math.sqrt(deviation/temperatureSeries.length);
-
-        return result;
+        return Math.sqrt(deviation/temperatureSeries.length);
     }
 
     public double min() {
-        CheckIsSeriesNull();
-        double min_value = temperatureSeries[0];
+        checkIsSeriesNull();
+        double minValue = temperatureSeries[0];
 
         for (double t: temperatureSeries) {
-            if (t < min_value) {
-                min_value = t;
+            if (t < minValue) {
+                minValue = t;
             }
         }
 
-        return min_value;
+        return minValue;
     }
 
     public double max() {
-        CheckIsSeriesNull();
+        checkIsSeriesNull();
 
-        double max_value = temperatureSeries[0];
+        double maxValue = temperatureSeries[0];
 
         for (double t: temperatureSeries) {
-            if (t > max_value) {
-                max_value = t;
+            if (t > maxValue) {
+                maxValue = t;
             }
         }
 
-        return max_value;
+        return maxValue;
     }
 
     public double findTempClosestToZero() {
@@ -79,7 +74,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double findTempClosestToValue(double tempValue) {
-        CheckIsSeriesNull();
+        checkIsSeriesNull();
         double closest = temperatureSeries[0];
         double differenceFromValue = Math.abs(tempValue - closest);
         for (double t: temperatureSeries) {
@@ -126,18 +121,18 @@ public class TemperatureSeriesAnalysis {
     }
 
     public TempSummaryStatistics summaryStatistics() {
-        CheckIsSeriesNull();
+        checkIsSeriesNull();
         return new TempSummaryStatistics(average(), deviation(), min(), max());
     }
 
     public int addTemps(double... temps) {
-        int cur_length = temperatureSeries.length;
+        int curLength = temperatureSeries.length;
 
         temperatureSeries = extendArray(temperatureSeries);
 
         for (int i = 0; i < temps.length; i++) {
-            int j = i + cur_length;
-            if (temperatureSeries.length < j){
+            int j = i + curLength;
+            if (temperatureSeries.length < j) {
                 temperatureSeries = extendArray(temperatureSeries);
             }
 
@@ -147,25 +142,25 @@ public class TemperatureSeriesAnalysis {
         return temps.length;
     }
 
-    private double[] extendArray(double[] arr){
-        double[] arr_x_2 = new double[arr.length*2];
+    private double[] extendArray(double[] arr) {
+        double[] arrX2 = new double[arr.length*2];
 
-        System.arraycopy(arr, 0, arr_x_2, 0, arr.length);
+        System.arraycopy(arr, 0, arrX2, 0, arr.length);
 
-        return arr_x_2;
+        return arrX2;
     }
 
-    private void CheckIsSeriesNull(){
-        if ( temperatureSeries == null || temperatureSeries.length == 0){
-            throw new IllegalArgumentException("Series is empty!");
+    private void checkForAbsoluteMin(double[] arr) {
+        for (double incomeT: arr) {
+            if (incomeT < absolute_min) {
+                throw new InputMismatchException();
+            }
         }
     }
 
-    private void CheckForAbsoluteMin(double[] arr){
-        for (double in_t: arr) {
-            if (in_t < absolute_min){
-                throw new InputMismatchException();
-            }
+    private void checkIsSeriesNull() {
+        if (temperatureSeries == null || temperatureSeries.length == 0) {
+            throw new IllegalArgumentException("Series is empty!");
         }
     }
 
